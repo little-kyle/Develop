@@ -1,0 +1,44 @@
+//回溯法
+class Solution {
+    //该函数主要的作用就是检查当前位置开始是否能够完整找到word[k,...]；
+    bool check(vector<vector<char>>& board,vector<vector<int>>& visited,int i,int j,string& s,int k){
+        if(board[i][j]!=s[k]) return false;//第一个字符就不匹配；
+        else if(k==s.length()-1){ //匹配第k个字符，且第k个字符为当前的word的最后一个字符；
+            return true;
+        }
+        visited[i][j]=true; //表示该位置已经访问过了，当前路径情况下；
+        vector<pair<int,int>>directions{{0,1},{0,-1},{1,0},{-1,0}};//表示一个格子的四个方向；
+        bool result=false;
+        for(const auto& dir:directions){ //考虑四种方向；
+            int newi=i+dir.first,newj=j+dir.second; //表示朝某一个方向进行移动后的坐标；
+            //需要进行边界的判断：
+            if(newi>=0&&newi<board.size()&&newj>=0&&newj<board[0].size()){
+                if(!visited[newi][newj]){ //没有访问过；
+                    bool flag=check(board,visited,newi,newj,s,k+1);
+                    if(flag){
+                        result=true;
+                        break;
+                    }
+                }
+            }
+        }
+        visited[i][j]=false;//重新设置为未访问，因为可能是其他的路径过来的；
+        return result;
+    }
+
+public:
+    bool exist(vector<vector<char>>& board, string word) {
+        int h=board.size(),w=board[0].size(); //获取网格的长和宽；
+        vector<vector<int>> visited(h,vector<int>(w));//创建一个h行，w列的数组；
+        //下面是遍历每一个网格的位置检查其是否能够满足word的要求；
+        for(int i=0;i<h;i++){
+            for(int j=0;j<w;j++){
+                bool flag=check(board,visited,i,j,word,0);//检查board的i，j位置开始是否能够获得word；
+                if(flag){ //只要找到一个就返回；
+                    return true;
+                }
+            }
+        }
+        return false;//每一个位置开始都不能找到word，最终返回false；
+    }
+};

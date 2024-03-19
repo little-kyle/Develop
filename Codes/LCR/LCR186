@@ -1,0 +1,136 @@
+//文物朝代判断：
+
+/*
+展览馆展出来自 13 个朝代的文物，每排展柜展出 5 个文物。
+某排文物的摆放情况记录于数组 places，其中 places[i] 表示处于第 i 位文物的所属朝代编号。其中，编号为 0 的朝代表示未知朝代。请判断并返回这排文物的所属朝代编号是否连续（如遇未知朝代可算作连续情况）。
+*/
+
+//也就是查看非零的子序列是否是非递减序列；
+
+class Solution {
+public:
+    bool checkDynasty(vector<int>& places) {
+        int nlen=places.size();
+        bool iscon=true;
+        for(int i=1;i<nlen;i++){
+            if(places[i]==0)continue;
+            if(places[i]<places[i-1]){
+                iscon=false;
+                break;
+            }
+        }
+        return iscon;
+    }
+};
+//上述将连续同样的朝代也作为ture；
+
+class Solution {
+public:
+    bool checkDynasty(vector<int>& places) {
+        int nlen=places.size();
+        bool iscon=true;
+        for(int i=1;i<nlen;i++){
+            if(places[i]==0)continue;
+            if(places[i]<=places[i-1]){
+                iscon=false;
+                break;
+            }
+        }
+        return iscon;
+    }
+};
+
+//还有一种错误：没有考虑降序的情况；
+class Solution {
+public:
+    bool checkDynasty(vector<int>& places) {
+        int nlen=places.size();
+        bool iscon=true;
+        for(int i=1;i<nlen;i++){
+            if(places[i]==0)continue;
+            if(places[i]<=places[i-1]){
+                iscon=false;
+                break;
+            }
+        }
+        if(iscon)return iscon;
+        iscon=true;
+        for(int i=1;i<nlen;i++){
+            if(places[i]==0)continue;
+            if(places[i-1] &&(places[i]>=places[i-1])){
+                iscon=false;
+                break;
+            }
+        }
+        return iscon;
+    }
+};
+
+//上面的错误在于中间如果有0了那么也还是按照前面的升序、降序；
+class Solution {
+public:
+    bool checkDynasty(vector<int>& places) {
+        int nlen=places.size();
+        bool iscon=true;
+        int pre=places[0];
+        for(int i=1;i<nlen;i++){
+            if(places[i]==0)continue;
+            if(places[i]<=pre){
+                iscon=false;
+                break;
+            }
+            pre=places[i];
+        }
+        if(iscon)return iscon;
+        iscon=true;
+        pre=places[0];
+        for(int i=1;i<nlen;i++){
+            if(places[i]==0)continue;
+            if(pre && places[i]>=pre){
+                iscon=false;
+                break;
+            }
+            pre=places[i];
+        }
+        return iscon;
+    }
+};
+
+//上述还是有问题！！
+
+//5个朝代连续的充分条件是：
+//1.除了未知朝代外，所有的朝代没有重复；
+//2.最大的朝代为ma，最小朝代为mi，则需要满足ma-mi<5
+
+
+//方法一：
+//首先判断有没有重复朝代，再判断这5个的朝代；
+class Solution {
+public:
+    bool checkDynasty(vector<int>& places) {
+        unordered_set<int> repeat;
+        int ma=0,mi=14;
+        for(int place:places){
+            if(place==0)continue;
+            ma=max(ma,place); //最大编号朝代；
+            mi=min(mi,place); //最小编号朝代；
+            if(repeat.find(place)!=repeat.end()) return false; //如果有重复的；
+            repeat.insert(place);
+        }
+        return ma-mi<5;
+    }
+};
+
+//方法二：排序+遍历
+class Solution {
+public:
+    bool checkDynasty(vector<int>& places) {
+        int unknown=0;
+        sort(places.begin(),places.end());
+        for(int i=0;i<4;i++){
+            if(places[i]==0)unknown++;
+            else if(places[i]==places[i+1]) return false;
+        }
+        return places[4]-places[unknown]<5;
+    }
+};

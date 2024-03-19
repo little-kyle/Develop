@@ -1,0 +1,34 @@
+//字母异位词分组
+//由于互为字母异位词的两个单词中包含的字母一定是一样的，所以进行排序之后是相同的
+class Solution {
+public:
+    vector<vector<string>> groupAnagrams(vector<string>& strs) {
+        unordered_map<string,vector<string>> mp;
+        for(string& str:strs){
+            string key=str;
+            sort(key.begin(),key.end());
+            //在 emplace_back() 函数中，是支持直接将构造函数所需的参数传递过去，然后构建一个新的对象出来，然后填充到容器尾部的。
+            mp[key].emplace_back(str);
+        }
+        vector<vector<string>> ans;
+        for(auto it=mp.begin();it!=mp.end();++it){
+            ans.emplace_back(it->second);
+        }
+        return ans;
+    }
+};
+//emplace_back和push_back函数的区别：https://zhuanlan.zhihu.com/p/213853588
+//时间复杂度：O(nklogk);n个字符串，每个字符串的最大长度为k;所以，排序：O(klogk)
+//空间复杂度：O(nk)
+
+
+//方法二：计数
+class Solution {
+public:
+    vector<vector<string>> groupAnagrams(vector<string>& strs) {
+        
+    }
+};
+
+
+

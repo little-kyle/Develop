@@ -1,0 +1,51 @@
+//水果成篮
+
+//根据滑动窗口的思想进行；
+
+class Solution {
+public:
+    int totalFruit(vector<int>& fruits) {
+        int n=fruits.size();
+        int start=0,end=0; //设置滑动窗口的起始和末尾位置；
+        int ans=0;
+        int count=1;
+        while(end<n){
+            //first和second记录当前能成篮的水果种类；
+            int first=fruits[start];
+            int second=fruits[end];
+            
+            while(fruits[end]!=first && fruits[end]!=second && first!=second){
+                ans=ans>count?ans:count;
+                start++;
+                count=1;
+            }
+            end++;
+            count++;
+        }
+        return ans;
+    }
+};
+
+//上述自己写的存在问腿；不能解决问题；
+class Solution {
+public:
+    int totalFruit(vector<int>& fruits) {
+        int n=fruits.size();
+        unordered_map<int,int> cnt;//借助一个辅助的哈希表；
+
+        int left=0,ans=0;
+        for(int right=0;right<n;++right){
+            ++cnt[fruits[right]];//表示建立key为fruits[right]的对应value为++；
+            while(cnt.size()>2){ //如果哈希表中的键值对大于两个：
+                auto it=cnt.find(fruits[left]); //表示找到哈希表中键为fruits[left];
+                --it->second;//将该键对应的值减一；
+                if(it->second==0){
+                    cnt.erase(it);//表示清除该键值对；
+                }
+                ++left;
+            }
+            ans=max(ans,right-left+1);
+        }
+        return ans;
+    }
+};

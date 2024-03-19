@@ -1,0 +1,54 @@
+//初步思路：递归；每次到达的一个新的格子是看作一个新的情况；
+
+class Solution {
+public:
+    int Count(int m,int n){
+        if(m==1||n==1)return 1;
+        int count1=Count(m-1,n);
+        int count2=Count(m,n-1);
+        return count1+count2;
+    }
+
+    int uniquePaths(int m, int n) {
+        int counts=Count(m,n);
+        return counts;
+    }
+};
+
+//上述测试结果是超出时间限制；
+
+//下面使用动态规划的思想：
+class Solution{
+public:
+    int uniquePaths(int m,int n){
+        vector<vector<int>> f(m,vector<int>(n));//创建一个m×n的二维数组；
+        //下面两个for循环目的是将和终点在同一条垂直、水平线上的点设置为1；因为这些格子到达终点只有一种路径；
+        for(int i=0;i<m;i++){
+            f[i][0]=1;
+        }
+        for(int i=0;i<n;i++){
+            f[0][i]=1;
+        }
+        for(int i=1;i<m;i++){
+            for(int j=1;j<n;j++){
+                f[i][j]=f[i-1][j]+f[i][j-1];
+            }
+        }
+        return f[m-1][n-1];
+    }
+};
+
+//下面是使用数学上的组合思想：
+//原点向m，n处进行移动，移动是两个方向，一共移动的步骤为m+n-2次，其中向下移动m-1次，向右移动n-1次；
+//所以有多少个路径方法其实就是从m+n-2中选择m-1个向下移动；剩下的都是向右移动；即从m+n-2中选择m-1次；
+class Solution{
+public:
+    int uniquePaths(int m,int n){
+        long long ans=1;
+        for(int x=n,y=1;y<m;++x,++y){ //x从n开始到m+n-2，y从1开始到m-1;
+            ans=ans*x/y;
+        }
+        return ans;
+    }
+};
+

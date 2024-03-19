@@ -1,0 +1,32 @@
+int M,N; //M、N分别表示左右集合的元素数量；
+int Map[MAXM][MAXN]; //邻接矩阵存图；
+int p[MAXN]; //记录当前右侧的元素所对应的左侧元素；
+bool vis[MAXN]; //记录右侧元素是否已经被访问过；
+
+bool match(int i){
+    for(int j=1;j<=N;++j){ //对于当前传入的左侧的元素i，遍历右侧中每一个元素进行判断；
+        if(Map[i][j]&&!vis[j]){//i与j有联系，且j没有被访问过；
+            vis[j]=true; //记录当前的j被访问过；
+            if(p[j]==0||match(p[j])){  //两个条件，要么是当前j还没有和左侧的i匹配成功，要么原来j匹配的左侧元素可以重新找到新的右侧元素；
+                p[j]=i;
+                return true;
+            }
+        }
+    }
+    return false; //循环结束都没有找到匹配，就会返回匹配失败；
+}
+
+int Hungarian(){
+    int cnt=0;
+    for(int i=1;i<=M;++i){ //遍历左侧的所有元素；
+        memset(vis,0,sizeof(vis)); //这里就是将vis数组中的所有元素都进行赋值为0；
+        if(match(i)) cnt++; //表示当前的左侧的一个元素已经可以和右侧的一个进行了匹配；
+    }
+    return cnt;
+}
+
+
+/*
+void *memset(void *str, int c, size_t n)
+该函数的作用就是将：复制字符 c（一个无符号字符）到参数 str 所指向的字符串的前 n 个字符。
+*/

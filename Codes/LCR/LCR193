@@ -1,0 +1,94 @@
+//二叉搜索树的最近公共祖先：
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+
+
+//方法一：两次遍历：就是先按照二叉搜索树的特点进行搜索，记录搜索的路径，然后再进行路径的比较，找到公共祖先；
+class Solution {
+public:
+    vector<TreeNode*> vec1;
+    vector<TreeNode*> vec2; 
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        search(root,p,vec1);
+        search(root,q,vec2);
+    }
+
+    void search(TreeNode* root, TreeNode* cur,vector<TreeNode*>& vec){
+        if(!root)return;
+        if(root->val==cur->val){
+            vec.push_back(root);
+            return;
+        }else if(root->val<cur->val){
+            vec.push_back(root);
+            search(root->right,root,vec);
+        }else{
+            vec.push_back(root);
+            search(root->left,cur,vec);
+        }
+    }
+};
+
+//官方代码：
+class Solution {
+public:
+    vector<TreeNode*>getPath(TreeNode* root, TreeNode* target){
+        vector<TreeNode*> path;
+        TreeNode* node=root;
+        while(node!=target){
+            path.push_back(node);
+            if(target->val<node->val){
+                node=node->left;
+            }else{
+                node=node->right;
+            }
+        }
+        path.push_back(node);//找到了该节点，需要将其加到最后；
+        return path;
+    }
+
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        vector<TreeNode*> path_p=getPath(root,p);//获取p在树中的路径；
+        vector<TreeNode*> path_q=getPath(root,q);//获取q在树中的路径；
+        TreeNode* ancestor;
+        for(int i=0;i<path_p.size() && i<path_q.size();++i){
+            //一开始是一样的路径，直到有分叉的时候，最后一个相同的就是公共的祖先；
+            if(path_p[i]==path_q[i]){
+                ancestor=path_p[i];
+            }else{
+                break;
+            }
+        }
+        return ancestor;
+    }
+};
+//时间复杂度：O(n);n是二叉搜索树中的节点个数，在进行二叉树的某个值的搜索的时候，最坏的情况就是二叉树是
+//一个链式的形状，所以最坏就是O(n);
+//空间复杂度：O(n),因为需要记录p和q的路径；
+
+//方法二：一次遍历；将两个节点放在一起遍历；
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        TreeNode* ancestor=root;
+        while(true){
+            if(p->val<ancestor->val && q->val<ancestor->val){
+                ancestor=ancestor->left;
+            }else if(p->val>ancestor->val && q->val > ancestor->val){
+                ancestor=ancestor->right;
+            }else{
+                break;
+            }
+        }
+        return ancestor;
+    }
+};
+//时间复杂度：O（n）
+//空间复杂度：O（1）
+

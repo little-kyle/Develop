@@ -1,0 +1,69 @@
+//给你一个链表的头节点 head 和一个整数 val ，请你删除链表中所有满足 Node.val == val 的节点，并返回 新的头节点 。
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* removeElements(ListNode* head, int val) {
+        ListNode* l=head;
+        if(head==nullptr)return head;
+        ListNode* r=l->next;
+        if(r==nullptr&&l->val==val)return nullptr;
+        if(r==nullptr&&l->val!=val)return head;
+        while(r){
+            if(r->val==val){
+                l->next=r->next;
+            }else{
+
+            }
+        }
+    }
+};
+
+
+//上述没完成！！！回溯的思想；通过递归一直根据指针找到链表最后，然后依次向前，把每次向前的一个节点看作是head
+class Solution {
+public:
+    ListNode* removeElements(ListNode* head, int val) {
+        if(head==nullptr){
+            return head;
+        }
+        head->next=removeElements(head->next,val);
+        return head->val==val?head->next:head;
+    }
+};
+
+class Solution {
+public:
+    ListNode* removeElements(ListNode* head, int val) {
+        //删除头节点：
+        while(head!=NULL &&head->val==val){ //该循环直到找到不为val的节点或者为null；
+            ListNode* tmp=head;
+            head=head->next;
+            delete tmp; //释放原本head节点的内存空间；
+        }
+
+        //删除非头节点：上面的循环保证了这里的head对应的val不等于val
+        ListNode* cur=head;
+        while(cur!=NULL&&cur->Next!=NULL){
+            if(cur->next->val==val){
+                ListNode* tmp=cur->next;
+                cur->next=cur->next->next;
+                delete tmp;
+            }else{
+                cur=cur->next;
+            }
+        }
+        return head;
+    }
+};
+//时间复杂度：O(n);
+//空间复杂度：O(1);

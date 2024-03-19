@@ -1,0 +1,39 @@
+//设备中存有 n 个文件，文件 id 记于数组 documents。若文件 id 相同，则定义为该文件存在副本。请返回任一存在副本的文件 id。
+
+//一方面可以使用一个辅助数组、字典等数据结构；另一种在原地进行判断；
+
+
+//https://www.cnblogs.com/cscshi/p/15612343.html
+//使用字典辅助；
+class Solution {
+public:
+    int findRepeatDocument(vector<int>& documents) {
+        unordered_map<int,bool> aidmap;
+        for(int i=0;i<documents.size();++i){
+            if(aidmap[documents[i]])return documents[i];
+            aidmap[documents[i]]=true;
+        }
+        return -1;
+    }
+};
+
+
+//原地进行交换；
+class Solution{
+public:
+    int findRepeatDocument(vector<int>& documents){
+        int i=0;
+        while(i<documents.size()){
+            if(documents[i]==i){
+                i++;
+                continue;
+            }
+            if(documents[documents[i]]==documents[i])return documents[i];
+            documnets[documents[i]]=documents[i];
+        }
+        return -1;
+    }
+};
+
+
+

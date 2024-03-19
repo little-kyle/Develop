@@ -1,0 +1,51 @@
+//图书整理Ⅰ
+
+//书店店员有一张链表形式的书单，每个节点代表一本书，节点中的值表示书的编号。
+//为更方便整理书架，店员需要将书单倒过来排列，就可以从最后一本书开始整理，逐一将书放回到书架上。请倒序返回这个书单链表。
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+
+//回溯的思想;递归的思想：
+class Solution {
+public:
+    vector<int> reverseBookList(ListNode* head) {
+        recur(head);
+        return res;
+    }
+
+private:
+    vector<int> res;
+    void recur(ListNode* head){
+        if(head==nullptr)return;
+        recur(head->next);
+        res.push_back(head->val);
+    }
+};
+
+
+//使用辅助栈：
+class Solution {
+public:
+    vector<int> reverseBookList(ListNode* head) {
+        stack<int> stk;
+        while(head!=nullptr){
+            stk.push(head->val);
+            head=head->next;
+        }
+        vector<int> res;
+        while(!stk.empty()){
+            res.push_back(stk.top());
+            stk.pop();
+        }
+        return res;
+    }
+};

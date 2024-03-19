@@ -1,0 +1,54 @@
+//动态规划的思想；
+class Solution {
+public:
+    int cuttingRope(int n) {
+        vector<int> dp(n+1);
+        dp[0]=0,
+        dp[1]=0;
+        dp[2]=1;
+        for(int i=3;i<=n;i++){
+            int currmax=0; //记录当前长度为i的时候可以拆分的最大乘积和；
+            for(int j=1;j<i;j++){
+                currmax=max(currmax,max(j*(i-j),j*dp[i-j]));
+            }
+            dp[i]=currmax;
+        }
+        return dp[n];
+    }
+};
+
+//动态规划的进一步优化；根据一些推导可以知道只需要对少量的情况进行判断；
+class Solution{    
+public:
+     int cuttingRope(int n) {
+        vector<int> dp(n+1);
+        dp[0]=0;
+        dp[1]=0;
+        dp[2]=1;
+        for(int i=3;i<=n;i++){
+            int currmax=0;
+            currmax=max(max(2*(i-2),2*dp[i-2]),max(3*(i-3),3*dp[i-3]));
+            dp[i]=currmax;
+        }
+        return dp[n];
+     }
+};
+
+//运用数学思想；
+class Solution {
+public:
+    int cuttingRope(int n) {
+        if(n<=3)return n-1;
+        int powerint=n/3;
+        int result=n%3;
+        if(result==0){
+            return pow(3,powerint);
+        }
+        else if(result==1){
+            return pow(3,powerint-1)*4;
+        }
+        else{
+            return pow(3,powerint)*2;
+        }
+    }
+};

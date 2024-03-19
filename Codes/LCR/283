@@ -1,0 +1,43 @@
+//移动0；
+
+//给定一个数组 nums，编写一个函数将所有 0 移动到数组的末尾，同时保持非零元素的相对顺序。
+
+//请注意 ，必须在不复制数组的情况下原地对数组进行操作。
+
+class Solution {
+public:
+    void moveZeroes(vector<int>& nums) {
+        int len=nums.size();
+        int left=0,right=0;
+        while(right<len){
+            if(nums[right]!=0){
+                nums[left]=nums[right];
+                left++;
+                right++;
+            }else if(nums[right]==0){
+                right++;
+            }
+        }
+        while(left<len){
+            nums[left]=0;
+            left++;
+        }
+    }
+};
+//直接进行交换，这样也能保证原来的顺序是不变的；
+class Solution {
+public:
+    void moveZeroes(vector<int>& nums) {
+        int len=nums.size();
+        int left=0,right=0;
+        while(right<len){
+            if(nums[right]){
+                int temp=nums[left];
+                nums[left]=nums[right];
+                nums[right]=temp;
+                left++:
+            }
+            right++;
+        }
+    }
+};

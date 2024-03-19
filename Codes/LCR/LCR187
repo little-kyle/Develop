@@ -1,0 +1,36 @@
+//破冰游戏（约瑟夫环问题？）
+
+/*
+社团共有 num 位成员参与破冰游戏，编号为 0 ~ num-1。成员们按照编号顺序围绕圆桌而坐。
+社长抽取一个数字 target，从 0 号成员起开始计数，排在第 target 位的成员离开圆桌，
+且成员离开后从下一个成员开始计数。请返回游戏结束时最后一位成员的编号。
+*/
+
+//返回最后一个离开成员的编号即返回第num个离开的成员编号；
+class Solution {
+public:
+    int iceBreakingGame(int num, int target) {
+        vector<bool> isleave(num,true);
+        for(int i=0;i<num;i++){ //每一个for循环表示离开一个人；
+
+        }
+    }
+};
+
+//K神解答：
+/*
+模拟整个删除的过程，就是构建一个长度为num的链表，每轮删除第target个节点，直到还剩一个节点；这样的时间复杂度为O(nm);
+*/
+//约瑟夫问题可以使用动态规划进行求解：
+class Solution {
+public:
+    int iceBreakingGame(int num, int target) {
+        int x=0;
+        for(int i=2;i<=num;i++){
+            x=(x+target)%i;
+        }
+        return x;
+    }
+};
+//时间复杂度：O(N);
+//空间复杂度：O(1);

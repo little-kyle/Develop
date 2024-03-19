@@ -1,0 +1,26 @@
+//训练计划Ⅰ：将所有奇数移动到偶数的前面：
+//使用双指针写法：如果两个指针一个从头一个从尾部那么移动后，相对位置改变；
+class Solution {
+public:
+    vector<int> trainingPlan(vector<int>& actions) {
+        int n=actions.size();
+        int start=0,end=n-1;
+        while(start<end){
+            while(actions[start]%2==1&&start<end)start++;
+            while(actions[end]%2==0&&start<end)end--;
+            if(start<end){
+                int temp=actions[start];
+                actions[start]=actions[end];
+                actions[end]=temp;
+                start++;
+                end--;
+            }
+        }
+        return actions;
+    }
+};
+//注意上述在while循环中end--，start++时可能造成数组索引的越界；
+
+actions[i] & 1 == 1; //和1进行&操作，如果等于1则表示为奇数；
+actions[i] & 1 == 0; //表示为偶数；
+

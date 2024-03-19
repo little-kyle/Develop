@@ -1,0 +1,81 @@
+//寻找目标值：
+
+//m*n 的二维数组 plants 记录了园林景观的植物排布情况，具有以下特性：
+//每行中，每棵植物的右侧相邻植物不矮于该植物；
+//每列中，每棵植物的下侧相邻植物不矮于该植物。
+
+
+
+class Solution {
+public:
+    bool findTargetIn2DPlants(vector<vector<int>>& plants, int target) {
+        int row=plants.size()-1;
+        int col=0;
+        while(row>=0 && col < plants[0].size()){
+            if(plants[row][col]<target) col++;
+            else if(plants[row][col]>target) row--;
+            else return true;
+        }
+        return false;
+    }
+};
+
+//下面的写法：注意报错：原因在于力扣对数组越界进行报错；
+
+class Solution {
+public:
+    bool findTargetIn2DPlants(vector<vector<int>>& plants, int target) {
+        int row=plants.size()-1;
+        int col=0;
+        while(row>=0 && col < plants[0].size()){
+            if(plants[row][col]==target) return true;
+            if(plants[row][col]<target) col++; //因为这里满足了所以col++越界，下面的if继续判断导致了数组越界的错误；
+            if(plants[row][col]>target) row--;
+        }
+        return false;
+    }
+};
+
+/*
+=================================================================
+==20==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x602000000554 at pc 0x000000367371 bp 0x7ffc32bb61a0 sp 0x7ffc32bb6198
+READ of size 4 at 0x602000000554 thread T0
+    #2 0x7f6c14ef9082  (/lib/x86_64-linux-gnu/libc.so.6+0x24082)
+0x602000000554 is located 0 bytes to the right of 4-byte region [0x602000000550,0x602000000554)
+allocated by thread T0 here:
+    #7 0x7f6c14ef9082  (/lib/x86_64-linux-gnu/libc.so.6+0x24082)
+Shadow bytes around the buggy address:
+  0x0c047fff8050: fa fa fd fa fa fa fd fa fa fa fd fa fa fa fd fd
+  0x0c047fff8060: fa fa fd fa fa fa fd fa fa fa fd fd fa fa fd fa
+  0x0c047fff8070: fa fa fd fa fa fa fd fd fa fa fd fa fa fa fd fa
+  0x0c047fff8080: fa fa fd fd fa fa fd fa fa fa fd fa fa fa fd fd
+  0x0c047fff8090: fa fa fd fa fa fa fd fa fa fa fd fa fa fa fd fa
+=>0x0c047fff80a0: fa fa fd fa fa fa fd fa fa fa[04]fa fa fa fa fa
+  0x0c047fff80b0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0c047fff80c0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0c047fff80d0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0c047fff80e0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0c047fff80f0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==20==ABORTING
+
+*/

@@ -1,0 +1,70 @@
+//给你一个按照非递减顺序排列的整数数组 nums，和一个目标值 target。请你找出给定目标值在数组中的开始位置和结束位置。
+//如果数组中不存在目标值 target，返回 [-1, -1]。
+
+//你必须设计并实现时间复杂度为 O(log n) 的算法解决此问题。
+
+//需要我们找两个点：开始点和终止点；
+class Solution {
+public:
+
+    vector<int> res={-1,-1};
+
+    void midsearch(vector<int>& nums, int start,int end,int target){ //和正常的二分查找的区别在于，其找到了之后不是直接将其填入；
+        if(start>end) return;
+        int mid=start+(end-start)/2;
+        if(nums[mid]==target){
+            if(res[0]==-1 || mid < res[0])res[0]=mid;
+            if(res[1]==-1 || mid >res[1])res[1]=mid;
+            midsearch(nums,start,mid-1,target);
+            midsearch(nums,mid+1,end,target);
+        }
+        else if(nums[mid]>target){
+            midsearch(nums,start,mid-1,target);
+        }else{
+            midsearch(nums,mid+1,end,target);
+        }
+    }
+
+    vector<int> searchRange(vector<int>& nums, int target) {
+        int len=nums.size();
+        //vector<int> res={-1,-1};
+        if(len<=0) return res;
+        int start=0,end=len-1;
+        midsearch(nums,start,end,target);
+        return res;
+        }
+};
+
+
+//官方的写法：
+class Solution{
+public:
+    int binarySearch(vector<int>& nums,int target, bool lower){
+        int left=0, right=(int)nums.size()-1, ans=(int)nums.size();
+        //使用迭代的方法进行二分查找；
+        while(left<=right){
+            int mid=(left+right)/2;
+            //如果是找下界，则right在两种情况下会变化；
+            if(nums[mid]>target ||(lower && nums[mid]>=target)){
+                right=mid-1;
+                ans=mid;
+            }else{
+                left=mid+1;
+            }
+        }
+        return ans;
+    }
+
+    vector<int> searchRange(vector<int>& nums, int target){
+        int leftidx=binarySearch(nums,target,true); //找到第一个对应的下标；
+        int rightidx=binarySearch(nums,target,false)-1; //找到第一个大于target的下标，然后-1；
+        if(leftidx<=rightidx && rightidx<nums.size() && nums[leftidx]==target && nums[rightidx]==target){
+            return vector<int>{leftidx,rightidx};
+        }
+        return vector<int>{-1,-1};
+    }
+};
+
+
+
+

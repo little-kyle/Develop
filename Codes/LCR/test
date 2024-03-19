@@ -1,0 +1,62 @@
+//下面是一个阶乘的函数：
+
+#include<stdio.h>
+__attribute__((noinline))
+int calc(int n){
+    int fact=1,num=n+1;
+
+    int i;
+    for(i=1;i<num;i++){
+        fact*=i;
+    }
+    return fact;
+}
+
+int main(){
+    return calc(9);
+}
+
+
+//注意上述的代码编译在C89中无法进行，C89不能允许for循环内定义变量，需要修改为：或者修改为C99编译；
+int i;
+for(i=0;i<num;i++){}
+
+
+#include<stdio.h>
+
+int calc(int n){
+    int fact0=1,fact1=1,fact2=1,fact3=1;
+
+    int i;
+    for(i=1;i<n;i+=4){
+        fact0*=i;
+        fact1*=i+1;
+        fact2*=i+2;
+        fact3*=i+3;
+    }
+    return fact0*fact1*fact2*fact3;
+}
+
+int main(){
+    return calc(9);
+}
+
+
+#include<stdio.h>
+
+int calc(int n){
+    int fact=1;
+
+    int i;
+    for(i=1;i<n;i+=4){
+        fact*=i;
+        fact*=i+1;
+        fact*=i+2;
+        fact*=i+3;
+    }
+    return fact;
+}
+
+int main(){
+    return calc(9);
+}

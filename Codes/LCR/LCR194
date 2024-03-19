@@ -1,0 +1,94 @@
+//二叉树的最近公共祖先；
+//这道题目和LCR193不同的是，该题目中是对于二叉树中的公共祖先进行判断，193是二叉搜索树；
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+
+
+class Solution {
+public:
+    vector<TreeNode*>getPath(TreeNode* root,TreeNode* target){
+
+    }
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+       vector<TreeNode*> path_p=getPath(root,p);
+       vector<TreeNode*> path_q=getPath(root,q);
+       TreeNode* ancestor;
+       for(int i=0; i<path_p.size()&&i<path_q.size();i++){
+            if(path_p[i]==path_q[i]){
+                ancestor=path_p[i];
+            }else{
+                break;
+            }
+       }
+       return ancestor; 
+    }
+};
+
+
+//官方答案：
+//方法一：递归：
+class Solution {
+public:
+    TreeNode* ans;
+    //该函数主要用于判断是否包含该节点；
+    bool dfs(TreeNode* root,TreeNode* p,TreeNode* q){
+        if(root==nullptr)return false;
+        bool lson=dfs(root->left,p,q);
+        bool rson=dfs(root->right,p,q);
+        //要么就是两个子树分别都有一个p、q，要么当前节点是p或q，那么其子树中有另一个；
+        if((lson && rson)|| ((root->val==p->val || root->val ==q->val)&&(lson || rson))){
+            ans=root;
+        }
+        return lson || rson || (root->val==p->val || root->val==q->val);
+    }
+
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        dfs(root,p,q);
+        return ans;
+    }
+};
+//时间复杂度：O(n),n是二叉树的节点个数；
+//空间复杂度：O(n),递归调用的栈深取决于二叉树的高度；
+
+//方法二：存储父节点：
+/*使用哈希表来存储所有节点的父节点，然后利用节点的父节点信息从p节点不断往上跳，并且记录访问过的节点；
+再从q不断往上跳，如果碰到已经访问过的节点，就是最近的公共祖先节点；
+*/
+class Solution {
+public:
+    unordered_map<int,TreeNode*> fa;
+    unordered_map<int,bool> vis;
+    void dfs(TreeNode* root){
+        if(root->left!=nullptr){
+            fa[root->left->val]=root;
+            dfs(root->left);
+        }
+        if(root->right!=nullptr){
+            fa[root->right->val]=root;
+            dfs(root->right);
+        }
+    }
+
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        fa[root->val]=nullptr;
+        dfs(root);
+        while(p!=nullptr){
+            vis[p->val]=true;
+            p=fa[p->val];
+        }
+        while(q!=nullptr){
+            if(vis[q->val])return q;
+            q=fa[q->val];
+        }
+        return nullptr;
+    }
+};
+//时间复杂度：O(n)
+//空间复杂度：O(n)

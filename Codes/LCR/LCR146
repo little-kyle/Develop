@@ -1,0 +1,63 @@
+//螺旋遍历二维数组；这道题目和54题是一样的，可能需要注意如果原始给定的数组是空的；
+
+class Solution {
+public:
+    vector<int> spiralArray(vector<vector<int>>& array) {
+
+        if(array.empty())return {}; //这句很重要！！！
+        int height=array.size();
+        int width=array[0].size();
+        
+        int t=0;
+        int b=height-1;
+        int l=0;
+        int r=width-1;
+        vector<int> res=[];
+        while(true){
+            for(int i=l;i<=r;++i)res.push_back(array[t][i]);
+            if(++t>b)break;
+            for(int i=t;i<=b;++i)res.push_back(array[i][r]);
+            if(--r<l)break;
+            for(int i=r;i>=l;--i)res.push_back(array[b][i]);
+            if(--b<t)break;
+            for(int i=b;i>=t;--i)res.push_back(array[i][l]);
+            if(++l>r)break;
+        }
+        return res;
+    }
+};
+
+//写法二：
+class Solution{
+private:
+    static constexpr int directions[4][2]={{0,1},{1,0},{0,-1},{-1,0}};//表示四个方向；
+public:
+    vector<int> spiralArray(vector<vector<int>>& array){
+        if(array.size()==0||array[0].size()==0)return {};
+
+        int rows=array.size(),columns=array[0].size();
+        vector<vector<bool>> visited(rows,vector<bool>(columns));
+        int total=rows*columns;
+        vector<int> order(total); //用于记录所有的结果数组；
+
+        int row=0,column=0;
+        int directionIndex=0;
+        for(int i=0;i<total;i++){ //也就是遍历条件的终止是达到数组所有元素数量；
+            order[i]=array[row][column];
+            visited[row][column]=true;
+            //下面按照directions中的方向进行转移；
+            int nextRow=row+directions[directionIndex][0],nextColumn=column+directions[directionIndex][1];
+            if(nextRow<0 || nextRow>=rows ||nextColumn<0 ||nextColumn>=columns || visited[nextRow][nextColumn]){
+                directionIndex=(directionIndex+1)%4;//表示需要换个方向进行遍历了；
+            }
+            row+=directions[directionIndex][0];
+            column+=directions[directionIndex][1];
+        }
+        return order;
+    }
+};
+
+/*注意const和constexpr之间的区别：
+（1）const变量的初始化可以延迟到运行时，而constexpr变量必须在编译时进行初始化，所有constexpr变量均为常量，所有需要使用常量表达式初始化；
+（2）cosnt * 表示被指向的是常量，*const 表示指针本身就是常量；而在constexpr声明中定义了一个指针，限定符constexpr仅对指针有效；
+*/

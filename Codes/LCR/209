@@ -1,0 +1,61 @@
+//给定一个含有 n 个正整数的数组和一个正整数 target 。
+//找出该数组中满足其总和大于等于 target 的长度最小的 连续子数组 [numsl, numsl+1, ..., numsr-1, numsr] ，并返回其长度。如果不存在符合条件的子数组，返回 0 。
+
+//需要找到数组中连续的子集使得子集和大于等于target；
+class Solution {
+public:
+    int minSubArrayLen(int target, vector<int>& nums) {
+        
+    }
+};
+//=========================================================================================
+//初步无思路：方法一暴力法
+class Solution {
+public:
+    int minSubArrayLen(int target, vector<int>& nums) {
+        int result=INT32_MAX; //需要获得最小的值那么就应该初始为最大值；
+        int sum=0; //用于记录子序列的总和；
+        int sublength=0; //用于记录子序列的长度；
+        //因为使用暴力法，需要使用两个for循环；
+        for(int i=0;i<nums.size();i++){
+            sum=0;
+            for(int j=i;j<nums.size();j++){ //每一次表示从当前位置向后第一次达到值大于target的情况；
+                sum+=nums[j];
+                if(sum>=target){
+                    sublength=j-i+1;//表示一旦子序列的总和超过了target值，那么就会计算当前所需要的子序列长度；
+                    result=result<sublength?result:sublength;
+                    break;
+                }
+            }
+        }
+        return result==INT32_MAX ?0:result;
+    }
+};
+
+//方法二：滑动窗口的思想；
+class Solution {
+public:
+    int minSubArrayLen(int target, vector<int>& nums) {
+        int n=nums.size();
+        if(n==0)return 0;
+        int ans=INT_MAX;
+        int start=0,end=0;
+        int sum=0;
+        while(end<n){
+            sum+=nums[end];
+            while(sum>=target){
+                ans=min(ans,end-start+1);
+                sum-=nums[start];
+                start++;
+            }
+            end++;
+        }
+        return ans==INT_MAX?0:ans;
+    }
+};
+
+
+
+
+
+

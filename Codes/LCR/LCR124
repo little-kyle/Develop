@@ -1,0 +1,38 @@
+//推理二叉树
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+
+//给定了一个二叉树的前序和中序遍历序列，还原出二叉树；
+
+
+class Solution {
+public:
+    TreeNode* deduceTree(vector<int>& preorder, vector<int>& inorder) {
+        this->preorder=preorder;
+        for(int i=0;i<inorder.size();i++){ //对于中序序列的每一个阶段，构建中序节点值到节点索引的映射；
+            hmap[inorder[i]]=i;
+        }
+        return recur(0,0,inorder.size()-1); //注意这里的第一个表示根节点在preorder中的索引，后面两个是在inorder中的索引；
+    }
+private:
+    vector<int> preorder; //这里存储了前序节点的顺序；
+    unordered_map<int,int>hmap; //构建一个无序的哈希映射；
+    TreeNode* recur(int root,int left,int right){
+        if(left>right) return nullptr;
+        TreeNode* node=new TreeNode(preorder[root]); 
+        int i=hmap[preorder[root]];//找到中序序列中root所在的位置；
+        node->left=recur(root+1,left,i-1); 
+        node->right=recur(root+i-left+1,i+1,right);
+        return node;
+    }
+
+};

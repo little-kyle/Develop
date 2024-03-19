@@ -1,0 +1,78 @@
+import pandas as pd
+import numpy as np
+#pd.set_option('display.notebook_repr_html',False)
+
+
+#read=pd.read_excel(io=r'/home/hanjunyang/COVID.xls')
+#print(read)
+data_1=pd.read_excel("D:/Datasets/covid.csv")
+data_2=pd.read_excel("D:/Datasets/zsh1.csv")
+
+print(data_1)
+print("----")
+print(data_2)
+#print(data_1[0])
+data_1=np.array(data_1)
+#print(data_1)
+#print(data_1[0])
+print("=============")
+
+data_2=np.array(data_2)
+
+#data=np.append(data_1,data_2,axis=0)
+#print(data)
+dict={}
+for line in data_1:
+    #print(line[2])
+    #print(type(line[2]))
+    if line[2] in dict:
+        new_list=dict[line[2]]
+        new_list.append(str(line[0]))
+        #print("----")
+        dict[line[2]]=new_list
+        continue
+    dict[line[2]]=[str(line[0])]
+
+both=[]
+
+
+dict_both={}
+
+for line in data_2:
+    print(line[3])
+    print(type(line))
+    if line[3] in dict:
+        exlist=dict[line[3]] #这一天的病例；
+        if str(line[0]) in exlist: #添加；
+            if str(line[3]) in dict_both: 
+                new_list=dict_both[line[3]]
+                new_list.append(str(line[0]))
+                dict_both[line[3]]=new_list
+                continue
+            dict_both[line[3]]=[str(line[0])]
+#print(dict['2022/12/10'])
+#print(dict_both['2022/12/10'])
+print(dict_both)
+
+for key,value in dict_both.items():
+    f=open("D:/Datasets/covid_zsh.txt",'a')
+    strs=key+" : "
+    for case in value:
+        strs=strs+case+"  "
+    f.write(strs+'\n')
+    f.close()
+
+
+
+
+
+
+#filename="D:/Datasets/1.csv"
+#with open(filename,encoding='mbcs') as csvfile:
+#    reader = csv.DictReader(csvfile)
+    #print()
+#    for line in reader:
+#        print(line)
+    #print(reader)
+    #column = [row[u"序号"] for row in reader]   # weight 同列的数据
+#print(column)

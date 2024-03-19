@@ -1,0 +1,47 @@
+//返回数组所有可能的子集：初步思路：回溯
+class Solution {
+public:
+    vector<int> temp; 
+    vector<vector<int>> result;
+
+    int powers(int n){
+        return pow(2,n);
+    }
+
+    void dfs(vector<int>& nums,int start,int end){
+
+    }
+
+    vector<vector<int>> subsets(vector<int>& nums) {
+        int n=nums.size();
+        int num=powers(n);
+        //vector<vector<int>> result(num,vector<int>); //创建长度为n的数组用于存放最终的结果；
+        vector<int> start={};
+        result.push_back(start);
+        dfs(nums,0,n);
+        return result;
+    }
+};
+
+
+class Solution{
+public:
+    vector<int> t;
+    vector<vector<int>> ans;
+
+    void dfs(int cur,vector<int>& nums){
+        if(cur==nums.size()){
+            ans.push_back(t);
+            return;
+        }
+        //表示当前数加进去；
+        t.push_back(nums[cur]);
+        dfs(cur+1,nums);
+        t.pop_back();//当前数不添加进去；
+        dfs(cur+1,nums);
+    }
+    vector<vector<int>> subsets(vector<int>& nums) {
+        dfs(0, nums);
+        return ans;
+    }
+};

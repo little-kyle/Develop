@@ -1,0 +1,56 @@
+//给定n个数，返回所有含有k个数组合；返回从n个数中选择k个的所有情况；
+//[1,2,3,...n]
+class Solution {
+public:
+    vector<vector<int>> combine(int n, int k) {
+        //首先获得有多少种组合；
+        int ans=1;
+        for(int x=n-k+1,y=1;y<k;x++,y++){ //这里就是说会有k-1次循环；
+            ans=ans*x/y; //有多少种组合情况；
+        }
+        vector<vector<int>> result(ans,vector<int>(k));
+
+    }
+};
+
+//上述为自己写的代码；思路先计算有多少种组合，创建一个二维数组用来存放该结果；
+
+/*========================================================================*/
+
+//递归实现组合型枚举
+/*
+使用递归来实现二进制枚举（子集枚举），假设需要找到一个长度为n的序列a的所有子序列：
+回溯法的思想：
+*/
+
+
+class Solution {
+public:
+    vector<int> temp; //这里的tenp数组会维持在<=k个数；
+    vector<vector<int>> ans;
+
+    void dfs(int cur,int n,int k){ //cur表示当前位置；n是序列的总长度；k是需要选取的数量；
+        //表明在1到cur-1之间选取的数+剩下的数不足k个，所以该路径不符合；
+        if(temp.size()+(n-cur+1)<k){
+            return;
+        }
+        //表明已经有了一个符合的答案组合；
+        if(temp.size()==k){
+            ans.push_back(temp);//将该种符合条件的组合放到数组ans中；
+            return;
+        }
+        //考虑当前的位置，也就是将当前的cur放到temp中，剩下的使用dfs；
+        temp.push_back(cur);
+        dfs(cur+1,n,k);
+        temp.pop_back();//删除cur，即不考虑当前位置；
+        dfs(cur+1,n,k);
+    }
+
+    vector<vector<int>> combine(int n, int k) {
+        dfs(1,n,k); //表示从1-n之间选择k个；
+        return ans;
+    }
+};
+
+
+

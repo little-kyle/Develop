@@ -1,0 +1,116 @@
+//有效数字
+
+class Solution {
+public:
+    //首先列举所有的状态集合：
+    enum State{
+        STATE_INITIAL,
+        STATE_INT_SIGN,
+        STATE_INTEGER,
+        STATE_POINT,
+        STATE_POINT_WITHOUT_INT,
+        STATE_FRACTION,
+        STATE_EXP,
+        STATE_EXP_SIGN,
+        STATE_EXP_NUMBER,
+        STATE_END
+    };
+    //列举字符的类型：
+    enum CharType{
+        CHAR_NUMBER,
+        CHAR_EXP,
+        CHAR_POINT,
+        CHAR_SIGN,
+        CHAR_SPACE,
+        CHAR_ILLEGAL
+    };
+
+    //将字符串中的每个字符转化到状态机中个各个状态中；
+    CharType toCharType(char ch){
+        if(ch>='0' && ch<='9'){
+            return CHAR_NUMBER;
+        }else if(ch=='e'||ch=='E'){
+            return CHAR_EXP;
+        }else if(ch=='.'){
+            return CHAR_POINT;
+        }else if(ch=='+' || ch=='-'){
+            return CHAR_SIGN;
+        }else if(ch==' '){
+            return CHAR_SPACE;
+        }else{
+            return CHAR_ILLEGAL;
+        }
+    }
+
+    bool validNumber(string s) {
+        unordered_map<State,unordered_map<CharType,State>> transfer{
+            {
+                STATE_INITIAL,{ //表示当前为起始状态，下面是在该情况下，遇到第一个，需要转移到第二个状态；
+                    {CHAR_SPACE,STATE_INITIAL},
+                    {CHAR_NUMBER,STATE_INTEGER},
+                    {CHAR_POINT,STATE_POINT_WITHOUT_INT},
+                    {CHAR_SIGN,STATE_INT_SIGN}
+                }
+            },{
+                STATE_INT_SIGN,{
+                    {CHAR_NUMBER,STATE_INTEGER},
+                    {CHAR_POINT,STATE_POINT_WITHOUT_INT}
+                }
+            },{
+                STATE_INTEGER,{
+                    {CHAR_NUMBER,STATE_INTEGER},
+                    {CHAR_EXP,STATE_EXP},
+                    {CHAR_POINT,STATE_POINT},
+                    {CHAR_SPACE,STATE_END}
+                }
+            },{
+                STATE_POINT, {
+                    {CHAR_NUMBER, STATE_FRACTION},
+                    {CHAR_EXP, STATE_EXP},
+                    {CHAR_SPACE, STATE_END}
+                }
+            }, {
+                STATE_POINT_WITHOUT_INT, {
+                    {CHAR_NUMBER, STATE_FRACTION}
+                }
+            }, {
+                STATE_FRACTION,
+                {
+                    {CHAR_NUMBER, STATE_FRACTION},
+                    {CHAR_EXP, STATE_EXP},
+                    {CHAR_SPACE, STATE_END}
+                }
+            }, {
+                STATE_EXP,
+                {
+                    {CHAR_NUMBER, STATE_EXP_NUMBER},
+                    {CHAR_SIGN, STATE_EXP_SIGN}
+                }
+            }, {
+                STATE_EXP_SIGN, {
+                    {CHAR_NUMBER, STATE_EXP_NUMBER}
+                }
+            }, {
+                STATE_EXP_NUMBER, {
+                    {CHAR_NUMBER, STATE_EXP_NUMBER},
+                    {CHAR_SPACE, STATE_END}
+                }
+            }, {
+                STATE_END, {
+                    {CHAR_SPACE, STATE_END}
+                }
+            }
+        };
+        int len=s.length();
+        State st=STATE_INITIAL; //初始状态；
+        for(int i=0;i<len;i++){
+            CharType typ=toCharType(s[i]);//对字符串的每一个字符进行处理，转换成字符类型；
+            if(transfer[st].find(typ)==transfer[st].end()){return false;}//表示该状态下，输入该字符类型无法继续转移失败退出；
+            else{
+                st=transfer[st][typ];
+            }
+        }
+        //判断最终的状态是不是定义的接受状态中的一种；
+        return st==STATE_INTEGER||st==STATE_POINT||st==STATE_FRACTION||st==STATE_EXP_NUMBER||st==STATE_END;
+    }
+};

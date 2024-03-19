@@ -1,0 +1,38 @@
+//把字符串转换成整数（atoi）
+
+/*
+有下面四种字符需要考虑：
+1.首部空格：删除就可；
+2.符号位；
+3.非数字字符；
+4.数字字符:字符转化为数字就只需要将此数字的ASCII码和0的ASCII码相减就可以；
+
+对于数字是否会越界的问题，需要判断拼接之后是否超过了2147483647，如果超过了就加上符号位直接返回就行
+数字的拼接边界就是bndry=2147483647//10=214748364；那么下面两种情况就会导致越界：
+因为会执行res=10*res+x；所以当res>bndry和res=bndry且x>7的时候会发生越界；
+*/
+
+
+class Solution {
+public:
+    int myAtoi(string str) {
+        int res=0,bndry=INT_MAX/10;
+        int i=0,sign=1,length=str.size();
+        if(length==0)return 0; //该字符串为空字符串；
+        while(str[i]==' '){ //该循环主要是为了排除前置的空格；
+            if(++i==length)return 0; 
+        }
+        if(str[i]=='-')sign=-1;
+        if(str[i]=='-'||str[i]=='+')i++;
+        for(int j=i;j<length;j++){
+            if(str[j]<'0'||str[j]>'9')break; //说明当前遍历的字符已经不是数字了；
+            if(res>bndry || res==bndry && str[j]>'7') //处理越界的情况；
+                return sign==1?INT_MAX:INT_MIN;
+            res=res*10+(str[j]-'0');
+        }
+        return sign*res;
+    }
+};
+
+//时间复杂度：O(N),N是字符串的长度；线性遍历字符串的时间；
+//空间复杂度：O(1);

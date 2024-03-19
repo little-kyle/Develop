@@ -1,0 +1,42 @@
+//最小覆盖子串
+
+class Solution {
+public:
+    unordered_map<char,int>ori,cnt; //创建辅助的哈希表；
+
+    bool check(){ //用于检查哈希表；
+        //当只想读取range中元素时，使用const auto&,如：for(const auto&x:range),它不会进行拷贝，也不会修改range,我们会使用：
+        //const auto &p:ori
+        for(const auto &p:ori){
+            if(cnt[p.first]<p.second){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    string minWindow(string s, string t) {
+        //遍历字符串 t 然后将其统计信息记录在ori哈希表中；也就是ori中记录了每个字符c对应在t中出现的次数；
+        for(const auto &c:t){
+            ++ori[c];
+        }
+        int l=0, r=-1;
+        int len=INT_MAX, ansL=-1, ansR=-1;
+        while(r<int(s.size())){
+            if(ori.find(s[++r])!=ori.end()){  //指向哈希表的最后一个容器，实则超出了哈希表的范围，为空;表示如果待处理的字符不是空；
+                ++cnt[s[r]];  //这里使用的r其实是上面++过之后的情况；就更新哈希表；
+            }
+            while(check()&&l<=r){ //如果满足了check检查的数量要求（即cnt和ori两个对应字符且对应数目一样则成功，即一个可行窗口）；
+                if(r-l+1<=len){
+                    len=r-l+1;
+                    ansL=l;
+                }
+                if(ori.find(s[l])!=ori.end()){ //这里表示如果不是空，就对窗口进行缩小；
+                    --cnt[s[l]]; //对应的字符数统计数目减一；
+                }
+                ++l; //l向后移动一位；
+            }
+        }
+        return ansL==-1?string():s.substr(ansL,len); //不符合条件就返回空；
+    }
+};

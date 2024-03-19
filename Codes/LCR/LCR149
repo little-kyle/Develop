@@ -1,0 +1,34 @@
+//一棵圣诞树记作根节点为 root 的二叉树，节点值为该位置装饰彩灯的颜色编号。
+//请按照从 左 到 右 的顺序返回每一层彩灯编号
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+
+//因为是层序遍历可以借助辅助队列
+class Solution {
+public:
+    vector<int> decorateRecord(TreeNode* root) {
+        queue<TreeNode*> Q; //注意创建的辅助队列中的数据类型；
+        vector<int> res; //用于保存结果；
+        if(!root)return res;//注意root为空的情况；
+        Q.push(root);
+        while(!Q.empty()){
+            TreeNode* node=Q.front();//获取队列的首个元素；
+            Q.pop();//随即删除队列的首个元素；
+            res.push_back(node->val);
+            if(node->left)Q.push(node->left); //注意需要判断一下是否为空，不要把null添加到队列中；
+            if(node->right)Q.push(node->right);
+        }
+        return res;
+    }
+};
+

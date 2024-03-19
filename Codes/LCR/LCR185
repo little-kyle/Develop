@@ -1,0 +1,8 @@
+//统计结果概率；
+
+class Solution {
+public:
+    vector<double> statisticsProbability(int num) {
+
+    }
+};

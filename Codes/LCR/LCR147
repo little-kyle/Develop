@@ -1,0 +1,53 @@
+//最小栈
+/*
+实现 MinStack 类:
+
+MinStack() 初始化堆栈对象。
+void push(int val) 将元素val推入堆栈。
+void pop() 删除堆栈顶部的元素。
+int top() 获取堆栈顶部的元素。
+int getMin() 获取堆栈中的最小元素
+*/
+class MinStack {
+public:
+    /** initialize your data structure here. */
+    stack<int>A,B;//创建两个栈；一个栈用于正常，一个栈用于弹出最小值；
+    MinStack() {
+    }
+    
+    void push(int x) {
+        A.push(x);//将x正常压入A栈；
+        if(B.empty() || B.top()>=x){ //如果B栈空，或者栈顶（最小元素还要大于等于x则x压入）
+            B.push(x);
+        }
+    }
+    
+    void pop() {
+        if(A.top()==B.top()){
+            A.pop();
+            B.pop();
+        }else{
+            A.pop();
+        }
+    }
+    
+    int top() {
+        return A.top();
+    }
+    
+    int getMin() {
+        return B.top();
+    }
+};
+/*
+这道题目使用了两个栈来进行，注意B栈的压入条件，使得其栈顶始终保持最小值；
+*/
+
+/**
+ * Your MinStack object will be instantiated and called as such:
+ * MinStack* obj = new MinStack();
+ * obj->push(x);
+ * obj->pop();
+ * int param_3 = obj->top();
+ * int param_4 = obj->getMin();
+ */

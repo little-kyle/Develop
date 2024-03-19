@@ -1,0 +1,107 @@
+
+//合并K个升序的列表；
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* mergeKLists(vector<ListNode*>& lists) {
+        int k=lists.length; //首先获取需要合并的链表的个数；
+        //设置k个指针进行遍历这k个链表；
+        
+    }
+};
+//上述的问题在于：k的大小是变化的，较难处理；
+
+//方法一：顺序合并；主要就是对链表指针的处理；将多个链表合并问题转化为两个链表合并问题；
+class Solution{
+public:
+    ListNode* mergeTwoLists(ListNode *a,ListNode *b){ //该函数的作用是合并两个链表；
+        if((!a)||(!b)) return a?a:b; //在合并两个链表的时候，如果有一个已经是null为空了，那么将另一个直接接在后面；
+        //head是合并后的新链表的指向头节点的指针；
+        ListNode head, *tail=&head, *aPtr=a, *bPtr=b; //aPtr和bPtr分别指向待合并的两个列表；
+        while(aPtr && bPtr){ //当两个链表都没空的时候；
+            if(aPtr->value < bPtr->value){
+                tail->next=aPtr;aPtr=aPtr->next;
+            }else{
+                tail->next=bPtr;bPtr=bPtr->next;
+            }
+            tail=tail->next;
+        }
+        tail->next=(aPtr ? aPtr : bPtr);  //上述的while循环终止的条件，是一定有一个指针是NULL，还没有空的一个链表直接接在后面；
+        return head.next;
+    }
+    
+    ListNode* mergeKLists(vector<ListNode*>& lists){
+        ListNode *ans=nullptr; //创建一个合并后的新空链表；
+        for(size_t i=0;i<lists.size();++i){ //遍历每一个链表；将每一个列表和ans进行合并；
+            ans=mergeTwoLists(ans,lists[i]);
+        }
+        return ans;
+    }
+};
+
+//方法二：分治法；
+class Solution{
+public:
+    ListNode* mergeTwoLists(ListNode *a,ListNode *b){
+        if((!a)||(!b)) return a?a:b;
+        ListNode head,*tail=&head,*aPtr=a,*bPtr=b;
+        while(aPtr && bPtr){
+            if(aPtr->val < bPtr->val){
+                tail->next=aPtr;aPtr=aPtr->next;
+            }else{
+                tail->next=bPtr;bPtr=bPtr->next;
+            }
+            tail=tail->next;
+        }
+        tail->next=(aPtr?aPtr:bPtr);
+        return head.next;
+    }
+    ListNode* merge(vector<ListNode*>& lists, int l,int r){ //l,r分别是分治法所需要的开始、终点索引；
+        if(l==r) return lists[l]; //表示l和r都指向一个链表，一个链表合并的结果就是本身；
+        if(l>r) return nullptr; //分治法的终止条件；
+        int mid=(l+r)>>1; //使用向右移动移位的方法实现除2；
+        return mergeTwoLists(merge(lists,l,mid),merge(lists,mid+1,r));
+    }
+
+    ListNode* mergeKLists(vector<ListNode*>& lists){ //容器中的元素是ListNode指针数据类型；
+        return merge(lists,0,lists.size()-1);
+    }
+};
+
+//方法三：使用优先队列合并；
+class Solution{
+public:
+    struct Status{
+        int val;
+        ListNode *ptr; //创建一个节点；
+        bool operator < (const Status &rhs) const{ //这里使用重载运算符；
+            return val>rhs.val;
+        }
+    };
+    priority_queue<Status> q;//构建一个优先队列；优先队列类型在将数据压如队列的时候会根据设定的优先级进行排列；
+
+    ListNode* mergeKLists(vector<ListNode*>& lists){
+        for(auto node:lists){ //遍历vector中的链表的每一个节点；；
+            if(node) q.push({node->val,node}); //将节点的值和node指针压到队列中；
+        }
+        ListNode head,*tail=&head;
+        while(!q.empty()){
+            auto f=q.top();q.pop(); //获取队列的首个元素，并且删除；
+            tail->next=f.ptr;
+            tail=tail->next;
+            if(f.ptr->next) q.push({f.ptr->next->val,f.ptr->next});
+        }
+        return head.next;
+    }
+
+};

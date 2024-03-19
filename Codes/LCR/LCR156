@@ -1,0 +1,134 @@
+//序列化与反序列化二叉树
+
+/*
+序列化是将一个数据结构或者对象转换为连续的比特位的操作，进而可以将转换后的数据存储在一个文件或者内存中，同时也可以通过网络传输到另一个计算机环境，采取相反方式重构得到原数据。
+
+请设计一个算法来实现二叉树的序列化与反序列化。这里不限定你的序列 / 反序列化算法执行逻辑，你只需要保证一个二叉树可以被序列化为一个字符串并且将这个字符串反序列化为原始的树结构。
+
+提示: 输入输出格式与 LeetCode 目前使用的方式一致，详情请参阅 LeetCode 序列化二叉树的格式。你并非必须采取这种方式，你也可以采用其他的方法解决这个问题。
+
+*/
+
+//序列化二叉树，就是通过某种策略进行遍历其结构，空节点也需要进行保存。
+
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Codec {
+public:
+    //使用&引用在字符串上直接进行修改；
+    void rserialize(TreeNode* root,string& str){
+        if(root==nullptr){
+            str+="None,";
+        }else{
+            str+=to_string(root->val)+",";
+            rserialize(root->left,str);
+            rserialize(root->right,str);
+        }
+    }
+
+    // Encodes a tree to a single string.
+    string serialize(TreeNode* root) {
+        string ret;//用于保存结果；
+        rserialize(root,ret); //自己创建一个函数用于递归构建序列；
+        return ret;
+    }
+
+    TreeNode* rdeserialize(list<string>& dataArray){
+        if(dataArray.front()=="None"){
+            dataArray.erase(dataArray.begin()); //清除该元素；
+            return nullptr;
+        }
+
+        TreeNode* root=new TreeNode(stoi(dataArray.front()));
+        //stoi函数将n进制的函数转化为十进制；
+        dataArray.erase(dataArray.begin());
+        root->left=rdeserialize(dataArray);
+        root->right=rdeserialize(dataArray);
+        return root;
+    }
+
+    // Decodes your encoded data to tree.
+    TreeNode* deserialize(string data) {
+        list<string> dataArray;
+        string str;
+        for(auto& ch:data){ //遍历序列化的字符串；每一个字符引用取出；
+            if(ch==','){//因为每一个字符串按照逗号分割；
+                dataArray.push_back(str);
+                str.clear();
+            }else{
+                str.push_back(ch);
+            }
+        }
+        if(!str.empty()){
+            dataArray.push_back(str); //最后一个没有逗号，
+            str.clear();
+        }
+        return rdeserialize(dataArray);
+    }
+};
+
+// Your Codec object will be instantiated and called as such:
+// Codec codec;
+// codec.deserialize(codec.serialize(root));
+
+
+class Codec {
+public:
+
+    // Encodes a tree to a single string.
+    string serialize(TreeNode* root) {
+        if(!root){
+            return "X";
+        }
+        auto left="("+serialize(root->left)+")";
+        auto right="("+serialize(root->right)+")";
+        return left+to_string(root->val)+right;
+    }
+
+    inline TreeNode* parseSubtree(const string &data,int &ptr){
+        ++ptr;
+        auto subtree=parse(data,ptr);
+        ++ptr;
+        return subtree;
+    }
+
+    inline int parseInt(const string &data,int &ptr){
+        int x=0,sgn=1;
+        if(!isdigit[data[ptr]]){
+            sgn=-1;
+            ++ptr;
+        }
+        while(isdigit(data[ptr])){
+            x=x*10+data[ptr++]-'0';
+        }
+        return x*sgn;
+    }
+
+
+    TreeNode* parse(const string &data,int &ptr){
+        if(data[ptr]=='X'){
+            ++ptr; //空；
+            return nullptr;
+        }
+        auto cur=new TreeNode(0);//创建一个新节点；
+        cur->left=parseSubtree(data,ptr); //解析左子树；
+        cur->val=parseInt(data,ptr); //解析根节点；
+        cur->right=parseSubtree(data,ptr); //解析右子树；
+        return cur;
+    }
+
+    // Decodes your encoded data to tree.
+    TreeNode* deserialize(string data) {
+        int ptr=0;
+        return parse(data,ptr);
+    }
+};
+

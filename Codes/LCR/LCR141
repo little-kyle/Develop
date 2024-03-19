@@ -1,0 +1,30 @@
+//给定一个头节点为 head 的单链表用于记录一系列核心肌群训练编号，请将该系列训练编号 倒序 记录于链表并返回。
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* trainningPlan(ListNode* head) {
+        if(head==nullptr || head->next==nullptr)return head;
+        
+        //注意：这里 ListNode* pre=head;的*号只代表了pre是一个该类型的指针，逗号后面不能代表；
+        ListNode* pre=head;
+        ListNode* cur=head->next;
+        head->next=nullptr;
+        while(cur!=nullptr){
+            ListNode* tmp=cur->next;
+            cur->next=pre;
+            pre=cur;
+            cur=tmp;
+        }
+        return pre;
+    }
+};

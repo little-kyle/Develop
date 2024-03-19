@@ -1,0 +1,75 @@
+//现需要将一根长为正整数 bamboo_len 的竹子砍为若干段，每段长度均为 正整数。请返回每段竹子长度的 最大乘积 是多少。
+//答案需要取模 1e9+7（1000000007），如计算初始结果为：1000000008，请返回 1。
+
+//剪绳子Ⅱ：
+class Solution {
+public:
+    int cuttingBamboo(int bamboo_len) {
+        int mod=1000000007;
+        vector<int> dp(bamboo_len+1);
+        for(int i=2;i<bamboo_len;i++){ //表示绳子的总长度；一点点加上去然后；
+            int curMax=0;
+            for(int j=1;j<i;j++){
+                curMax=max(curMax,(j*(i-j),j*dp[i-j]));
+            }
+            dp[i]=curMax%mod;
+        }
+        return dp[bamboo_len];
+    }
+};
+
+//上述自己写的代码存在问题失败：
+
+//根据减绳子Ⅰ的推到，我们需要尽可能将其且为多个长度为3的片段，留下的最后一段竹子长度可能为0，1，2；
+//次优：2，如最后一段绳子的长度为2，则保留，不再拆分成1×1；
+//最差：1，若最后一段竹子长度为1.则应该把一份3+1替换成2+2；
+class Solution {
+public:
+    int cuttingBamboo(int bamboo_len) {
+        int mod=1000000007;
+        if(bamboo_len<=3){
+            return bamboo_len-1;
+        }
+        int a,b;
+        a=bamboo_len/3;
+        b=bamboo_len%3;
+        if(b==0)return ((int)pow(3,a) % mod);
+        else if(b==1){
+            return ((int)pow(3,a-1)*4 % mod);
+        }else{
+            return ((int)pow(3,a)*2 % mod);
+        }
+        return 0;
+    }
+};
+/*上述代码依然会报错误；所以需要进行改进；可能是再进行次方运算的时候超出了范围；
+Line 11: Char 30: runtime error: 1.21577e+19 is outside the range of representable values of type 'int' (solution.cpp)
+SUMMARY: UndefinedBehaviorSanitizer: undefined-behavior prog_joined.cpp:20:30
+*/
+
+//注意pow函数的返回值是double类型，所以需要和mod保持一致才能进行取模运算；
+
+
+//为了防止上述错误：大数越界的情况，
+//我们需要对次方的中间计算过程进行优化，使得中间计算结果也在整数限定范围内；
+//主要由两种方法：循环求余  快速幂求余；
+class Solution {
+public:
+    int cuttingBamboo(int bamboo_len) {
+        int mod=1000000007;
+        if(bamboo_len<=3){
+            return bamboo_len-1;
+        }
+        int b;
+        b=bamboo_len%3;
+
+        long rem=1,x=3;
+        for(int a=bamboo_len/3-1;a>0;a/=2){
+            if(a%2==1) rem=(rem*x)%mod; //如果是奇数则单独×上； 
+            x=(x*x)%mod;
+        }
+        if(b==0) return (int)(rem*3%mod);
+        if(b==1) return (int)(rem*4%mod);
+        return (int)(rem*6%mod);
+    }
+};

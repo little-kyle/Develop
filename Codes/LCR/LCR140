@@ -1,0 +1,30 @@
+//对于一个列表，给定一个头节点为 head 的链表用于记录一系列核心肌群训练项目编号，请查找并返回倒数第 cnt 个训练项目编号。
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* trainingPlan(ListNode* head, int cnt) {
+        ListNode* pre=head;
+        ListNode* cur=head;
+        for(int i=0;i<cnt;i++){
+            cur=cur->next;
+        }
+        while(cur!=nullptr){
+            pre=pre->next;
+            cur=cur->next;
+        }
+        return pre;
+    }
+};
+
+//上述维护了两个指针，快慢指针，两个指针相距就是倒数的cnt个，这样快指针到达末尾时，pre就是倒数第cnt个节点；
+//时间复杂度:O(n),空间复杂度为：O(1);

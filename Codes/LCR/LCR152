@@ -1,0 +1,33 @@
+//请实现一个函数来判断整数数组 postorder 是否为二叉搜索树的后序遍历结果。
+
+//二叉搜索树的每个节点的左子树值小于根，右子树值大于根；后续遍历的话，最后一个节点是根；
+class Solution {
+public:
+    bool verifyTreeOrder(vector<int>& postorder) {
+        int  n=postorder.size(); //数组的长度（节点数量）；
+        root=postorder[n-1];
+        int i=0;
+        while(postorder[i]<root)i++;
+        bool left=verifyTreeOrder()
+    }
+};
+
+//方法一：递归分治：
+class Solution{
+public:
+    bool verifyTreeOrder(vector<int>& postorder){
+        return recur(postorder,0,postorder.size()-1);
+    }
+private:
+    bool recur(vector<int>& postorder,int i,int j){
+        if(i>=j)return true;
+        int p=i;
+        while(postorder[p]<postorder[j])p++;// 找到第一个大根节点的值位置（根节点是最后一个值）；
+        int m=p;
+        while(postorder[p]>postorder[j])p++; //正常下，该p会循环到最后一个节点（根节点），否组就不满足右子树全大于根节点；
+        return p==j &&recur(postorder,i,m-1) &&recur(postorder,m,j-1);
+
+    }
+};
+
+//还有其他方法尚未补全！！！

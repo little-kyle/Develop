@@ -1,0 +1,57 @@
+//判断一个二叉树是否为轴对称；
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    bool checkSymmetricTree(TreeNode* root) {
+        if(root==nullptr) return true;
+        
+    }
+};
+
+//答案：方法一：递归（使用的是栈）
+class Solution {
+public:
+    bool check(TreeNode* p,TreeNode* q){
+        if(!q&&!p)return true;//两个都是null；
+        if(!q||!p)return false;//表明两个有一个不是空，一个是空；
+        return (q->val==p->val)&&check(p->left,q->right)&&check(p->right,q->left);
+    }
+    bool checkSymmetricTree(TreeNode* root) {
+        return check(root,root);
+    }
+};
+
+//方法二：迭代；借助队列
+class Solution{
+public:
+    bool check(TreeNode* u,TreeNode* v){
+        queue<TreeNode*> q;
+        q.push(u);q.push(v);
+        while(!q.empty()){
+            //这里取出队列的前两个，所以在入队列的时候就要满足对应的要求；
+            u=q.front();q.pop();
+            v=q.front();q.pop();
+            if(!u&&!v)continue; //注意这里不是return true，而是表示当前取出来的两个是空，继续判断后面的；
+            if((!u||!v)||(u->val!=v->val))return false;
+            
+            q.push(u->left);
+            q.push(v->right);
+            q.push(u->right);
+            q.push(v->left);
+        }
+        return true;
+    }
+    bool checkSymmetricTree(TreeNode* root) {
+        return check(root, root);
+    }
+};

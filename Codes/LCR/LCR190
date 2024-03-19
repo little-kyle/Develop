@@ -1,0 +1,41 @@
+//加密运算：不使用加减乘除做加法；
+
+
+/*
+既然不能使用加减乘除，那么就应该考虑使用位运算；
+dataA和dataB，s=dataA+dataB，dataA(i)代表了dataA的二进制第i位置；
+
+dataA(i)  dataB(i)  无进位和n(i)  进位c(i+1)
+  0          0          0            0
+  0          1          1            0
+  1          0          1            0
+  1          1          0            1
+
+无进位的运算结果是和异或的结果相同，进位的结果是和操作的结果相同（并且需要左移一位）；
+n=dataA 异或 dataB;
+c=dataA & dataB <<1;
+则s=dataA + dataB =n+c
+*/
+
+
+class Solution {
+public:
+    int encryptionCalculate(int dataA, int dataB) {
+        while(dataB!=0){
+            int c=(unsigned int)(dataA&dataB)<<1; //这里计算了进位的情况；
+            dataA^=dataB;//这里计算了dataA和dataB每一位异或的结果；
+            //想要将异或的结果和与的结果c相加；则将dataB赋值为c；
+            dataB=c;
+        }
+        return dataA;
+    }
+};
+//时间复杂度：O(1)
+//空间复杂度：O(1)
+
+
+
+
+/*
+注意：在计算机系统中，数值一律使用补码来表示和存储，补码的优势：加法、减法可以同一处理；
+*/

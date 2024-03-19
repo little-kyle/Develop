@@ -1,0 +1,67 @@
+//将一个 二叉搜索树 就地转化为一个 已排序的双向循环链表 。
+//对于双向循环列表，你可以将左右孩子指针作为双向循环链表的前驱和后继指针，第一个节点的前驱是最后一个节点，最后一个节点的后继是第一个节点。
+//特别地，我们希望可以 就地 完成转换操作。当转化完成以后，树中节点的左指针需要指向前驱，树中节点的右指针需要指向后继。还需要返回链表中最小元素的指针。
+
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    Node* left;
+    Node* right;
+
+    Node() {}
+
+    Node(int _val) {
+        val = _val;
+        left = NULL;
+        right = NULL;
+    }
+
+    Node(int _val, Node* _left, Node* _right) {
+        val = _val;
+        left = _left;
+        right = _right;
+    }
+};
+*/
+
+//二叉搜索树的特性是：左子树的上值都小于根节点，右子树的值都大于根节点值；要进行转化为有序的链表就需要按照中序遍历二叉树；
+
+class Solution {
+public:
+    Node* treeToDoublyList(Node* root) {
+        if(root==nullptr)return root;
+        Node* head;
+        head->left=root;
+        head->right=root;
+        inorder(head,root);
+        return 
+    }
+};
+ 
+class Solution{
+public:
+    Node* treeToDoublyList(Node* root){
+        if(root==nullptr)return root;
+        dfs(root);
+        head->left=pre;
+        pre->right=head;
+        return head;
+    }
+private:
+    Node *pre,*head; //分别表示两个节点；head是双向链表的头节点，pre是虚头节点；
+    void dfs(Node* cur){
+        if(cur==nullptr)return;
+        dfs(cur->left); //遍历左子树；
+        if(pre!=nullptr) pre->right=cur; //将pre指向最后一个；
+        else head=cur;
+        cur->left=pre;
+        pre=cur;
+        dfs(cur->right);
+    }
+};
+
+
+
+

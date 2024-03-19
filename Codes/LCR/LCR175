@@ -1,0 +1,51 @@
+//某公司架构以二叉树形式记录，请返回该公司的层级数。
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+
+//初步思想：每一个节点的深度，是其左右子树的最大深度+1；
+//该思想其实就是使用了后序遍历的思想，
+/*
+1.计算左子树的深度；
+2.计算右子树的深度；
+3.获得左右子树深度最大的一个值+1（根节点）；
+*/
+class Solution {
+public:
+    int calculateDepth(TreeNode* root) {
+        if(root==nullptr)return 0;
+        int leftdepth=calculateDepth(root->left);
+        int rightdepth=calculateDepth(root->right);
+        return max(leftdepth,rightdepth)+1;
+    }
+};
+
+//方法二：层序遍历（借助辅助队列）
+class Solution{
+public:
+    int calculateDepth(TreeNode* root){
+        if(root==nullptr)return 0;
+        vector<TreeNode*> que; //这里创建一个vector来当作队列；
+        que.push_back(root);
+        int res=0;//用于记录深度；
+        while(!que.empty()){
+            vector<TreeNode*> tmp; //tmp队列配合下面的for循环，该层while循环中，tmp存储了该层上的所有节点；
+            for(TreeNode* node:que){
+                if(node->left!=nullptr) tmp.push_back(node->left);
+                if(node->right!=nullptr) tmp.push_back(node->right);
+            }
+            que=tmp; //该while循环结束之后，que是下一层的所有节点了；
+            res++; //每一个while循环对应了树的每一层；
+        }
+        return res;
+    }
+};

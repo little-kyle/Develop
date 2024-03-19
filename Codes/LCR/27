@@ -1,0 +1,70 @@
+//移除元素；需要注意的是数组是连续存储的；
+
+//因为不能使用新的辅助空间，所以这里考虑将所有值都移动到数组的末尾；
+class Solution {
+public:
+    int removeElement(vector<int>& nums, int val) {
+        int len=nums.size(); //原始数组的长度；
+        int count=len-1;  //该值表示如果在遍历的时候遇到val值之后将其放置的位置；
+        for(int i=len-1;i>=0;--i){
+            if(nums[i]==val && nums[count]!=val){
+                int temp=nums[count];
+                nums[count]=nums[i];
+                nums[i]=temp;
+                count--;
+            }else if(nums[i]==val && nums[count]==val){
+                count--;
+                if(count<0)return 0;
+                int temp=nums[count];
+                nums[count]=nums[i];
+                nums[i]=temp;
+                count--;
+            }
+        }
+        return count;
+    }
+};
+
+//对于上述的代码运行时出现错误：
+/*
+Line 1037: Char 34: runtime error: addition of unsigned offset to 0x602000000090 overflowed to 0x60200000008c (stl_vector.h)
+SUMMARY: UndefinedBehaviorSanitizer: undefined-behavior /usr/bin/../lib/gcc/x86_64-linux-gnu/11/../../../../include/c++/11/bits/stl_vector.h:1046:34
+可能的原因是对数组进行取值的时候可能存在下表越界的情况；
+*/
+
+//官方方法：
+class Solution {
+public:
+    int removeElement(vector<int>& nums, int val) {
+        int len=nums.size();
+        int left=0,right=0;
+        while(right<=len-1){
+            if(nums[right]==val){
+                right++;
+            }else if(nums[right]!=val){
+                nums[left]=nums[right];
+                left++;
+                right++;
+            }
+        }
+        return left;
+    }
+};
+
+//方法二：
+class Solution {
+public:
+    int removeElement(vector<int>& nums, int val) {
+        int len=nums.size();
+        int left=0,right=len;
+        while(left<right){
+            if(nums[left]==val){ //这里如果nums[right-1]还是val的话，因为left没变换所以还是会进行处理；
+                nums[left]=nums[right-1];
+                right--;
+            }else{
+                left++;
+            }
+        }
+        return left;
+    }
+};

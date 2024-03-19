@@ -1,0 +1,40 @@
+//给定一棵二叉树的根节点 root，请左右翻转这棵二叉树，并返回其根节点。
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* mirrorTree(TreeNode* root) {
+        if(root==nullptr)return root;
+        TreeNode* miroot=root->left; //这里初始化一个变量；注意指针在下面的操作中会导致指向的发生变化；
+        root->left=mirrorTree(root->right);
+        root->right=mirrorTree(miroot);
+        return root;
+    }
+};
+
+//使用辅助栈的情况：
+class Solution{
+public:
+    TreeNode* mirrorTree(TreeNode* root){
+        if(root==nullptr)return nullptr;
+        stack<TreeNode*> stack;
+        stack.push(root);
+        while(!stack.empty()){
+            TreeNode* node=stack.top();
+            stack.pop();
+            if(node->left!=nullptr)stack.push(node->left);
+            if(node->right!=nullptr)stack.push(node->right);
+            TreeNode* temp=node->left;
+            node->left=node->right;
+            node->right=temp;
+        }
+        return root;
+    }
+};

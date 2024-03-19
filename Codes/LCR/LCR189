@@ -1,0 +1,24 @@
+//设计机械累加器，就是从1，2...一直累加到target的总和，只具备加法；
+//不能使用乘除、if-else、switch-case、for循环、while循环、及条件判断语句等高级语句；
+
+
+//递归；
+class Solution {
+public:
+    int mechanicalAccumulator(int target) {
+        if(target==1)return 1; //但是这里由if判断语句；
+        target+=mechanicalAccumulator(target-1);
+        return target;
+    }
+};
+//为了使得上述的递归不使用if判断语句；则借助&& 和||的短路特点：
+class Solution {
+public:
+    int mechanicalAccumulator(int target) {
+        //首先会判断target>1，只有满足才会继续递归，否则return target，即target=1；
+        target>1 && (target+=mechanicalAccumulator(target-1));
+        return target;
+    }
+};
+//时间复杂度：O(target),需要开启target个递归函数；
+//空间复杂度：O(target),递归的深度达到target；
